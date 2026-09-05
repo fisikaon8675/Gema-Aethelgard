@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gema Aethelgard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2d2d2d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+    <!-- Memuat Phaser.js dari CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+</head>
+<body>
+    <!-- Memuat file scene di akhir body agar tidak memblokir render halaman -->
+    <script src="MapScene.js"></script>
+    <script src="GameScene.js"></script>
+    <script src="WifiScene.js"></script>
+    <script src="PipeScene.js"></script>
+    <script src="DopplerScene.js"></script>
+    
+    <script>
+        window.onload = function() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d', { willReadFrequently: true });
+
+            const config = {
+                type: Phaser.WEBGL,
+                width: 1280,
+                height: 720,
+                physics: { 
+                    default: 'arcade', 
+                    arcade: { debug: false } 
+                },
+                scene: [MapScene, GameScene, WifiScene, PipeScene, DopplerScene]
+            };
+            const game = new Phaser.Game(config);
+        }
+    </script>
+</body>
+</html>
