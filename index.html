@@ -2,24 +2,35 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gema Aethelgard</title>
     <style>
-        body {
+        body, html {
             margin: 0;
             padding: 0;
-            background-color: #2d2d2d;
+            background-color: #000000;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+        }
+        #game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
     <!-- Memuat Phaser.js dari CDN -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
 </head>
 <body>
-    <!-- Memuat file scene di akhir body agar tidak memblokir render halaman -->
+    <div id="game-container"></div>
+
+    <!-- Memuat file scene -->
     <script src="MapScene.js"></script>
     <script src="GameScene.js"></script>
     <script src="WifiScene.js"></script>
@@ -28,20 +39,20 @@
     
     <script>
         window.onload = function() {
-        const config = {
-            type: Phaser.AUTO,
-            width: 1280,
-            height: 720,
-            parent: 'game-container',
-            scale: {
-                mode: Phaser.Scale.FIT, // Otomatis menyesuaikan layar HP tanpa terpotong
-                autoCenter: Phaser.Scale.CENTER_BOTH
+            const config = {
+                type: Phaser.AUTO,
+                width: 1280,
+                height: 720,
+                parent: 'game-container',
+                scale: {
+                    mode: Phaser.Scale.FIT, // Menyesuaikan layar HP secara proporsional[cite: 3]
+                    autoCenter: Phaser.Scale.CENTER_BOTH
                 },
                 physics: { 
                     default: 'arcade', 
                     arcade: { debug: false } 
                 },
-                scene: [MapScene, GameScene, WifiScene,PipeScene, DopplerScene] 
+                scene: [MapScene, GameScene, WifiScene, PipeScene, DopplerScene] 
             };
             const game = new Phaser.Game(config);
         }
