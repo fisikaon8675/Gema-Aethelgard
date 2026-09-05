@@ -28,18 +28,20 @@
     
     <script>
         window.onload = function() {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d', { willReadFrequently: true });
-
-            const config = {
-                type: Phaser.WEBGL,
-                width: 1280,
-                height: 720,
+        const config = {
+            type: Phaser.AUTO,
+            width: 1280,
+            height: 720,
+            parent: 'game-container',
+            scale: {
+                mode: Phaser.Scale.FIT, // Otomatis menyesuaikan layar HP tanpa terpotong
+                autoCenter: Phaser.Scale.CENTER_BOTH
+                },
                 physics: { 
                     default: 'arcade', 
                     arcade: { debug: false } 
                 },
-                scene: [MapScene, GameScene, WifiScene, PipeScene, DopplerScene]
+                scene: [MapScene, GameScene, WifiScene,PipeScene, DopplerScene] 
             };
             const game = new Phaser.Game(config);
         }
