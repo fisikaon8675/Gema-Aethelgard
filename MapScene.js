@@ -661,7 +661,7 @@ class MapScene extends Phaser.Scene {
         const textGameOver = this.add.text(0, 60, 'Anomali gelombang menghancurkan dunia ini.\nSilakan muat ulang (refresh) halaman untuk mencoba lagi.', { fontSize: '20px', fill: '#ffffff', align: 'center' }).setOrigin(0.5);
         this.gameOverUI.add([bgGameOver, titleGameOver, textGameOver]);
 
-// --- UI PANDUAN AWAL (Hanya muncul sekali) ---
+    // --- UI PANDUAN AWAL (Hanya muncul sekali) ---
         if (!this.registry.get('intro_selesai')) {
             // Hentikan mesin fisika (pergerakan NPC dan Pemain) saat intro tampil
             this.physics.pause();
@@ -702,29 +702,59 @@ class MapScene extends Phaser.Scene {
                 this.physics.resume(); // Lanjutkan pergerakan pemain dan NPC
             });
         }
+        // --- KONTROL VIRTUAL (SMARTPHONE) ---
+        // Mengaktifkan dukungan multi-touch (agar bisa jalan sambil klik kuis)
+        this.input.addPointer(2); 
+
+        // Variabel penampung status tombol virtual
+        this.vPad = {
+            up: { isDown: false },
+            down: { isDown: false },
+            left: { isDown: false },
+            right: { isDown: false }
+        };
+
+        // Fungsi pembuat tombol D-Pad
+        const createDPad = (x, y, direction, symbol) => {
+            const btn = this.add.circle(x, y, 45, 0x000000, 0.4)
+                .setScrollFactor(0).setDepth(40000).setInteractive();
+            this.add.text(x, y, symbol, { fontSize: '36px', fill: '#ffffff' })
+                .setScrollFactor(0).setDepth(40001).setOrigin(0.5);
+
+            // Deteksi sentuhan tahan dan lepas
+            btn.on('pointerdown', () => this.vPad[direction].isDown = true);
+            btn.on('pointerup', () => this.vPad[direction].isDown = false);
+            btn.on('pointerout', () => this.vPad[direction].isDown = false); // Jika jari tergeser keluar tombol
+        };
+
+        // Menggambar D-Pad di pojok kiri bawah (sesuaikan X dan Y jika kurang pas)
+        createDPad(150, 500, 'up', '▲');
+        createDPad(150, 640, 'down', '▼');
+        createDPad(80, 570, 'left', '◀');
+        createDPad(220, 570, 'right', '▶');
     }
 
 update() {
         this.player.body.setVelocity(0);
         let isMoving = false;
 
-        // Gerak Kiri / Kanan dengan Animasi
-        if (this.cursors.left.isDown) {
+        // Gerak Kiri / Kanan dengan Animasi (Merespons Keyboard ATAU D-Pad Virtual)
+        if (this.cursors.left.isDown || this.vPad.left.isDown) {
             this.player.body.setVelocityX(-250);
             this.player.anims.play('walk_left', true); 
             isMoving = true;
-        } else if (this.cursors.right.isDown) {
+        } else if (this.cursors.right.isDown || this.vPad.right.isDown) {
             this.player.body.setVelocityX(250);
             this.player.anims.play('walk_right', true);
             isMoving = true;
         } 
-        // Gerak Atas / Bawah (Tanpa animasi kaki khusus, cukup ganti arah badan)
-        else if (this.cursors.up.isDown) {
+        // Gerak Atas / Bawah
+        else if (this.cursors.up.isDown || this.vPad.up.isDown) {
             this.player.body.setVelocityY(-250);
             this.player.anims.stop(); 
             this.player.setTexture('player_up');
             isMoving = true;
-        } else if (this.cursors.down.isDown) {
+        } else if (this.cursors.down.isDown || this.vPad.down.isDown) {
             this.player.body.setVelocityY(250);
             this.player.anims.stop();
             this.player.setTexture('player_down');
